@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments :: head (titulo='Equipos')"></head>
+
+<body>
+<div th:replace="fragments :: menu"></div>
+<div class="container-fluid">
+
+    <div class="row mt-3">
+        <div class="col">
+            <h2>Listado de equipos</h2>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Nombre</th>
+                    <th>Acción</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="equipo: ${equipos}">
+                    <td th:text="${equipo.id}"></td>
+                    <td><a th:href="@{/equipos/{id}(id=${equipo.id})}" th:text="${equipo.nombre}"></a></td>
+                    <td>
+                        <form th:unless="${equiposUsuario.contains(equipo)}" method="post"
+                              th:action="@{/equipos/{id}/unirme(id=${equipo.id})}">
+                            <button class="btn btn-success btn-sm" type="submit">Unirme</button>
+                        </form>
+                        <form th:if="${equiposUsuario.contains(equipo)}" method="post"
+                              th:action="@{/equipos/{id}/salir(id=${equipo.id})}">
+                            <button class="btn btn-danger btn-sm" type="submit">Salir</button>
+                        </form>
+                        <th:block th:if="${esAdmin}">
+                            <a class="btn btn-primary btn-sm" th:href="@{/equipos/{id}/editar(id=${equipo.id})}">Editar</a>
+                            <button class="btn btn-danger btn-sm" onmouseover="" style="cursor: pointer;"
+                                    th:onclick="'del(\'/equipos/' + ${equipo.id} + '\')'">Borrar</button>
+                        </th:block>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <a class="btn btn-primary" th:href="@{/equipos/nuevo}">Crear equipo</a>
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="col">
+            <div class="alert alert-success alert-dismissible fade show" role="alert" th:if="${!#strings.isEmpty(mensaje)}">
+                <span th:text="${mensaje}"></span>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert" th:if="${!#strings.isEmpty(error)}">
+                <span th:text="${error}"></span>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments::javascript"/>
+
+
+<script type="text/javascript">
+    function del(urlBorrar) {
+        if (confirm('¿Estás seguro/a de que quieres borrar el equipo?')) {
+            fetch(urlBorrar, {
+                method: 'DELETE'
+            }).then((res) => location.reload());
+        }
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:fragment="head (titulo)">
+    <meta charset="UTF-8"/>
+    <title th:text="${titulo}"></title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+
+<nav th:fragment="menu" class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/about}">ToDoList</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+
+            <!-- izq -->
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item" th:if="${session.idUsuarioLogeado != null}">
+                    <a class="nav-link"
+                       th:href="@{/usuarios/{id}/tareas(id=${session.idUsuarioLogeado})}">Tareas</a>
+                </li>
+                <li class="nav-item" th:if="${session.idUsuarioLogeado != null}">
+                    <a class="nav-link" th:href="@{/equipos}">Equipos</a>
+                </li>
+            </ul>
+
+            <!-- derecha -->
+            <ul class="navbar-nav">
+                <!-- Usuario logeado -->
+                <li class="nav-item dropdown" th:if="${session.idUsuarioLogeado != null}">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown">
+                        <span th:text="${session.nombreUsuarioLogeado}">Usuario</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-right">
+                        <li><a class="dropdown-item" href="#">Cuenta</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item" th:href="@{/logout}"
+                               th:text="'Cerrar sesión ' + ${session.nombreUsuarioLogeado}">Cerrar sesión</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- no logeado -->
+                <li class="nav-item" th:if="${session.idUsuarioLogeado == null}">
+                    <a class="nav-link" th:href="@{/login}">Login</a>
+                </li>
+                <li class="nav-item" th:if="${session.idUsuarioLogeado == null}">
+                    <a class="nav-link" th:href="@{/registro}">Registro</a>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+</nav>
+
+<div th:fragment="javascript">
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/js/popper.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+</div>
+
+</html>

@@ -1,0 +1,21 @@
+name: Developer tests
+
+on: push
+
+jobs:
+  # El nombre del job es launch-test
+  launch-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Hacemos un checkout del código del repositorio
+      - uses: actions/checkout@v4
+      # Instalamos Java 8 (Temurin) en la máquina del runner
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '8'
+          cache: maven
+      # Y lanzamos los tests
+      - name: Launch tests with Maven
+        run: ./mvnw test
