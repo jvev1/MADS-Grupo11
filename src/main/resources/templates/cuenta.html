@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- Página "Mi cuenta": datos del usuario logeado (issue #6) -->
+<head th:replace="fragments :: head (titulo='Mi cuenta')"></head>
+
+<body>
+<div th:replace="fragments :: menu"></div>
+<div class="container-fluid">
+
+    <div class="row mt-3">
+        <div class="col">
+            <h2>Mi cuenta</h2>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col">
+            <!-- Solo datos públicos: la contraseña nunca se muestra -->
+            <p><strong>Email:</strong> <span th:text="${usuario.email}"></span></p>
+            <p><strong>Nombre:</strong> <span th:text="${usuario.nombre}"></span></p>
+            <!-- La fecha es opcional en el registro: si no hay, se deja en blanco -->
+            <p><strong>Fecha de nacimiento:</strong>
+                <span th:text="${usuario.fechaNacimiento != null} ? ${#dates.format(usuario.fechaNacimiento, 'dd-MM-yyyy')} : ''"></span></p>
+            <!-- Vuelve a la lista de tareas del propio usuario -->
+            <a class="btn btn-primary" th:href="@{/usuarios/{id}/tareas(id=${usuario.id})}">Volver a mis tareas</a>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments::javascript"/>
+
+</body>
+</html>
