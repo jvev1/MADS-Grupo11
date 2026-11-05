@@ -35,7 +35,7 @@
                         <span th:text="${session.nombreUsuarioLogeado}">Usuario</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-right">
-                        <li><a class="dropdown-item" href="#">Cuenta</a></li>
+                        <li><a class="dropdown-item" th:href="@{/cuenta}">Cuenta</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
                             <a class="dropdown-item" th:href="@{/logout}"
