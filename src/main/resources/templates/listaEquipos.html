@@ -21,6 +21,7 @@
                     <th>Id</th>
                     <th>Nombre</th>
                     <th>Acción</th>
+                    <th>Miembros</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -42,6 +43,7 @@
                                     th:onclick="'del(\'/equipos/' + ${equipo.id} + '\')'">Borrar</button>
                         </th:block>
                     </td>
+                    <td th:text="${numUsuarios[equipo.id]}"></td>
                 </tr>
                 </tbody>
             </table>
