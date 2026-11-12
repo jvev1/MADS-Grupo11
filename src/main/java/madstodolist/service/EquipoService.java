@@ -102,6 +102,13 @@ public class EquipoService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public int numUsuariosEquipo(Long id) {
+        Equipo equipo = getEquipoOrThrow(id);
+        return equipo.getUsuarios().size();
+    }
+
+
     private void comprobarNombreValido(String nombre) {
         if (nombre == null || nombre.trim().isEmpty())
             throw new EquipoServiceException("El nombre del equipo no puede estar vacío");

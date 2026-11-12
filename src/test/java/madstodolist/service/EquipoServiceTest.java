@@ -228,7 +228,6 @@ public class EquipoServiceTest {
     @Test
     public void comprobarExcepciones() {
         // Comprobamos las excepciones lanzadas por los métodos
-        // recuperarEquipo, añadirUsuarioAEquipo, usuariosEquipo y equiposUsuario
         assertThatThrownBy(() -> equipoService.recuperarEquipo(1L))
                 .isInstanceOf(EquipoServiceException.class);
         assertThatThrownBy(() -> equipoService.añadirUsuarioAEquipo(1L, 1L))
@@ -237,10 +236,39 @@ public class EquipoServiceTest {
                 .isInstanceOf(EquipoServiceException.class);
         assertThatThrownBy(() -> equipoService.equiposUsuario(1L))
                 .isInstanceOf(EquipoServiceException.class);
+        assertThatThrownBy(() -> equipoService.numUsuariosEquipo(1L))
+                .isInstanceOf(EquipoServiceException.class);
 
         // Creamos un equipo pero no un usuario y comprobamos que también se lanza una excepción
         EquipoData equipo = equipoService.crearEquipo("Proyecto 1");
         assertThatThrownBy(() -> equipoService.añadirUsuarioAEquipo(equipo.getId(), 1L))
                 .isInstanceOf(EquipoServiceException.class);
     }
+
+    @Test
+    public void contarUsuariosEquipo() {
+        //Given
+        EquipoData equipo = equipoService.crearEquipo("Proyecto 1");
+        UsuarioData usuario = new UsuarioData();
+        usuario.setEmail("user@ua");
+        usuario.setPassword("123");
+        usuario = usuarioService.registrar(usuario);
+
+        UsuarioData usuario2 = new UsuarioData();
+        usuario2.setEmail("user@umh");
+        usuario2.setPassword("123");
+        usuario2 = usuarioService.registrar(usuario2);
+
+        //Comprobamos que no hay usuarios en el equipo
+        assertThat(equipoService.numUsuariosEquipo(equipo.getId())).isEqualTo(0);
+
+        //When
+        equipoService.añadirUsuarioAEquipo(equipo.getId(),usuario.getId());
+        equipoService.añadirUsuarioAEquipo(equipo.getId(),usuario2.getId());
+
+        //Then
+        assertThat(equipoService.numUsuariosEquipo(equipo.getId())).isEqualTo(2);
+
+    }
+
 }
