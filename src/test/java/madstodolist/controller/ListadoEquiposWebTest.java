@@ -1,6 +1,7 @@
 package madstodolist.controller;
 
 import madstodolist.authentication.ManagerUserSession;
+import madstodolist.dto.EquipoData;
 import madstodolist.dto.UsuarioData;
 import madstodolist.service.EquipoService;
 import madstodolist.service.UsuarioService;
@@ -68,5 +69,24 @@ public class ListadoEquiposWebTest {
         // WHEN, THEN
         this.mockMvc.perform(get("/equipos"))
                 .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void listadoMuestraMiembrosdeEquipo() throws Exception {
+        // GIVEN
+        UsuarioData usuario = addUsuarioBD("user@umh.es");
+        UsuarioData usuario2 = addUsuarioBD("user@ua.es");
+        EquipoData equipo = equipoService.crearEquipo("Proyecto AAA");
+        equipoService.añadirUsuarioAEquipo(equipo.getId(),usuario.getId());
+        equipoService.añadirUsuarioAEquipo(equipo.getId(),usuario2.getId());
+
+        when(managerUserSession.usuarioLogeado()).thenReturn(usuario.getId());
+
+        // WHEN, THEN
+        this.mockMvc.perform(get("/equipos"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(allOf(
+                        containsString("Miembros"),
+                        containsString("<td>2</td>"))));
     }
 }
