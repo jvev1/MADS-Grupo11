@@ -200,4 +200,38 @@ public class TareaWebTest {
         this.mockMvc.perform(get(urlListado))
                 .andExpect(content().string(containsString("Limpiar cristales coche")));
     }
+    @Test
+    public void listaTareasVaciaMuestraMensaje() throws Exception {
+        // GIVEN
+        // Un usuario sin tareas en la BD
+        UsuarioData usuario = new UsuarioData();
+        usuario.setEmail("vacio@ua");
+        usuario.setPassword("123");
+        usuario = usuarioService.registrar(usuario);
+
+        when(managerUserSession.usuarioLogeado()).thenReturn(usuario.getId());
+
+        // WHEN, THEN
+        // la página muestra el aviso de que no tiene tareas
+        String url = "/usuarios/" + usuario.getId().toString() + "/tareas";
+
+        this.mockMvc.perform(get(url))
+                .andExpect(content().string(containsString("No tienes tareas todavía")));
+    }
+
+    @Test
+    public void listaTareasConTareasNoMuestraMensaje() throws Exception {
+        // GIVEN
+        // Un usuario con dos tareas en la BD
+        Long usuarioId = addUsuarioTareasBD().get("usuarioId");
+        when(managerUserSession.usuarioLogeado()).thenReturn(usuarioId);
+
+        // WHEN, THEN
+        // la página no muestra el aviso
+        String url = "/usuarios/" + usuarioId.toString() + "/tareas";
+
+        this.mockMvc.perform(get(url))
+                .andExpect(content().string(not(containsString("No tienes tareas todavía"))));
+    }
+
 }
