@@ -99,7 +99,7 @@ public class EquipoController {
     public String nuevoEquipo(@ModelAttribute EquipoData equipoData, RedirectAttributes flash) {
         comprobarUsuarioLogeado();
         try {
-            equipoService.crearEquipo(equipoData.getNombre());
+            equipoService.crearEquipo(equipoData.getNombre(), equipoData.getDescripcion());
         } catch (EquipoServiceException e) {
             flash.addFlashAttribute("error", e.getMessage());
             return "redirect:/equipos/nuevo";
@@ -116,6 +116,7 @@ public class EquipoController {
             EquipoData equipo = equipoService.recuperarEquipo(idEquipo);
             model.addAttribute("equipo", equipo);
             equipoData.setNombre(equipo.getNombre());
+            equipoData.setDescripcion(equipo.getDescripcion());
         } catch (EquipoServiceException e) {
             throw new EquipoNotFoundException();
         }
@@ -128,7 +129,7 @@ public class EquipoController {
         comprobarUsuarioAdministrador();
         comprobarEquipoExiste(idEquipo);
         try {
-            equipoService.modificarNombreEquipo(idEquipo, equipoData.getNombre());
+            equipoService.modificarEquipo(idEquipo, equipoData.getNombre(), equipoData.getDescripcion());
         } catch (EquipoServiceException e) {
             flash.addFlashAttribute("error", e.getMessage());
             return "redirect:/equipos/" + idEquipo + "/editar";
