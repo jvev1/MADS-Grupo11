@@ -374,4 +374,15 @@ public class GestionEquiposWebTest {
 
         assertThat(equipoService.recuperarEquipo(equipo.getId()).getNombre()).isEqualTo("Proyecto AAA");
     }
+
+    @Test
+    public void listadoEquiposMuestraLaDescripcion() throws Exception {
+        UsuarioData usuario = addUsuarioBD("user@umh.es");
+        when(managerUserSession.usuarioLogeado()).thenReturn(usuario.getId());
+        equipoService.crearEquipo("Proyecto 1", "Descripción visible");
+
+        this.mockMvc.perform(get("/equipos"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Descripción visible")));
+    }
 }
