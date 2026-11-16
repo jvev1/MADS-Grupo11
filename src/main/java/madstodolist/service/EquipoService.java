@@ -28,14 +28,6 @@ public class EquipoService {
     @Autowired
     private ModelMapper modelMapper;
 
-    @Transactional
-    public EquipoData crearEquipo(String nombre) {
-        comprobarNombreValido(nombre);
-        Equipo equipo = new Equipo(nombre);
-        equipo = equipoRepository.save(equipo);
-        return modelMapper.map(equipo, EquipoData.class);
-    }
-
     @Transactional(readOnly = true)
     public EquipoData recuperarEquipo(Long id) {
         Equipo equipo = getEquipoOrThrow(id);
@@ -122,5 +114,27 @@ public class EquipoService {
     private Usuario getUsuarioOrThrow(Long idUsuario) {
         return usuarioRepository.findById(idUsuario)
                 .orElseThrow(() -> new EquipoServiceException("No existe el usuario con id " + idUsuario));
+    }
+
+    @Transactional
+    public EquipoData crearEquipo(String nombre) {
+        return crearEquipo(nombre, null);
+    }
+
+    @Transactional
+    public EquipoData crearEquipo(String nombre, String descripcion) {
+        comprobarNombreValido(nombre);
+        Equipo equipo = new Equipo(nombre, descripcion);
+        equipo = equipoRepository.save(equipo);
+        return modelMapper.map(equipo, EquipoData.class);
+    }
+
+    @Transactional
+    public EquipoData modificarEquipo(Long idEquipo, String nuevoNombre, String nuevaDescripcion) {
+        Equipo equipo = getEquipoOrThrow(idEquipo);
+        comprobarNombreValido(nuevoNombre);
+        equipo.setNombre(nuevoNombre);
+        equipo.setDescripcion(nuevaDescripcion);
+        return modelMapper.map(equipo, EquipoData.class);
     }
 }
