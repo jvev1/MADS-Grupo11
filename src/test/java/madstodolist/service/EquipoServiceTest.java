@@ -271,4 +271,26 @@ public class EquipoServiceTest {
 
     }
 
+    @Test
+    public void crearEquipoConDescripcion() {
+        EquipoData equipo = equipoService.crearEquipo("Proyecto 1", "Equipo de pruebas");
+        EquipoData equipoBd = equipoService.recuperarEquipo(equipo.getId());
+        assertThat(equipoBd.getDescripcion()).isEqualTo("Equipo de pruebas");
+    }
+
+    @Test
+    public void crearEquipoSinDescripcion() {
+        EquipoData equipo = equipoService.crearEquipo("Proyecto 1");
+        assertThat(equipoService.recuperarEquipo(equipo.getId()).getDescripcion()).isNull();
+    }
+
+    @Test
+    public void modificarEquipoCambiaNombreYDescripcion() {
+        EquipoData equipo = equipoService.crearEquipo("Proyecto 1", "Antigua");
+        equipoService.modificarEquipo(equipo.getId(), "Proyecto 2", "Nueva");
+        EquipoData equipoBd = equipoService.recuperarEquipo(equipo.getId());
+        assertThat(equipoBd.getNombre()).isEqualTo("Proyecto 2");
+        assertThat(equipoBd.getDescripcion()).isEqualTo("Nueva");
+    }
+
 }

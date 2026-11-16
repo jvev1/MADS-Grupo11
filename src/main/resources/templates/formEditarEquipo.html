@@ -19,6 +19,10 @@
             <label for="nombre">Nombre del equipo:</label>
             <input class="form-control" id="nombre" name="nombre" required th:field="*{nombre}" type="text"/>
         </div>
+            <div class="form-group">
+                <label for="descripcion">Descripción:</label>
+                <textarea class="form-control" id="descripcion" name="descripcion" rows="3" th:field="*{descripcion}"></textarea>
+            </div>
         <button class="btn btn-primary" type="submit">Modificar equipo</button>
         <a class="btn btn-link" th:href="@{/equipos}">Cancelar</a>
         </div>

@@ -12,6 +12,7 @@ import java.util.Set;
 public class Equipo implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    private String descripcion;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,6 +34,15 @@ public class Equipo implements Serializable {
     public Equipo(String nombre) {
         this.nombre = nombre;
     }
+
+    public Equipo(String nombre, String descripcion) {
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+    }
+
+    public String getDescripcion() { return descripcion; }
+
+    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
 
     public Long getId() {
         return id;
