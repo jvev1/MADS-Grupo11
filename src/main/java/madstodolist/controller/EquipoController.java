@@ -20,6 +20,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Controller
 public class EquipoController {
 
@@ -61,9 +65,15 @@ public class EquipoController {
     @GetMapping("/equipos")
     public String listadoEquipos(Model model) {
         Long idUsuario = comprobarUsuarioLogeado();
-        model.addAttribute("equipos", equipoService.findAllOrdenadoPorNombre());
+        List<EquipoData> equipos = equipoService.findAllOrdenadoPorNombre();
+        Map<Long,Integer> numUsuarios = new HashMap<>();
+        for(EquipoData equipo : equipos){
+            numUsuarios.put(equipo.getId(),equipoService.numUsuariosEquipo(equipo.getId()));
+        }
+        model.addAttribute("equipos", equipos);
         model.addAttribute("equiposUsuario", equipoService.equiposUsuario(idUsuario));
         model.addAttribute("esAdmin", esAdministrador(idUsuario));
+        model.addAttribute("numUsuarios", numUsuarios);
         return "listaEquipos";
     }
 
@@ -89,7 +99,7 @@ public class EquipoController {
     public String nuevoEquipo(@ModelAttribute EquipoData equipoData, RedirectAttributes flash) {
         comprobarUsuarioLogeado();
         try {
-            equipoService.crearEquipo(equipoData.getNombre());
+            equipoService.crearEquipo(equipoData.getNombre(), equipoData.getDescripcion());
         } catch (EquipoServiceException e) {
             flash.addFlashAttribute("error", e.getMessage());
             return "redirect:/equipos/nuevo";
@@ -106,6 +116,7 @@ public class EquipoController {
             EquipoData equipo = equipoService.recuperarEquipo(idEquipo);
             model.addAttribute("equipo", equipo);
             equipoData.setNombre(equipo.getNombre());
+            equipoData.setDescripcion(equipo.getDescripcion());
         } catch (EquipoServiceException e) {
             throw new EquipoNotFoundException();
         }
@@ -118,7 +129,7 @@ public class EquipoController {
         comprobarUsuarioAdministrador();
         comprobarEquipoExiste(idEquipo);
         try {
-            equipoService.modificarNombreEquipo(idEquipo, equipoData.getNombre());
+            equipoService.modificarEquipo(idEquipo, equipoData.getNombre(), equipoData.getDescripcion());
         } catch (EquipoServiceException e) {
             flash.addFlashAttribute("error", e.getMessage());
             return "redirect:/equipos/" + idEquipo + "/editar";

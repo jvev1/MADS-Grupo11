@@ -20,13 +20,16 @@
                 <tr>
                     <th>Id</th>
                     <th>Nombre</th>
+                    <th>Descripción</th>
                     <th>Acción</th>
+                    <th>Miembros</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="equipo: ${equipos}">
                     <td th:text="${equipo.id}"></td>
                     <td><a th:href="@{/equipos/{id}(id=${equipo.id})}" th:text="${equipo.nombre}"></a></td>
+                    <td th:text="${equipo.descripcion}"></td>
                     <td>
                         <form th:unless="${equiposUsuario.contains(equipo)}" method="post"
                               th:action="@{/equipos/{id}/unirme(id=${equipo.id})}">
@@ -42,6 +45,7 @@
                                     th:onclick="'del(\'/equipos/' + ${equipo.id} + '\')'">Borrar</button>
                         </th:block>
                     </td>
+                    <td th:text="${numUsuarios[equipo.id]}"></td>
                 </tr>
                 </tbody>
             </table>
