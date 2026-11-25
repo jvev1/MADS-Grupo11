@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -35,6 +36,20 @@ public class UsuarioController {
         comprobarUsuarioAdministrador();
         model.addAttribute("usuarios", usuarioService.allUsuarios());
         return "listaUsuarios";
+    }
+
+    @PostMapping("/registrados/{id}/bloqueo")
+    public String cambiarBloqueo(@PathVariable(value="id") Long idUsuario, RedirectAttributes flash) {
+        comprobarUsuarioAdministrador();
+        UsuarioData usuario = usuarioService.findById(idUsuario);
+        if (usuario == null) {
+            flash.addFlashAttribute("error", "El usuario no existe");
+        } else if (usuario.isAdmin()) {
+            flash.addFlashAttribute("error", "No se puede bloquear al administrador");
+        } else {
+            usuarioService.cambiarBloqueo(idUsuario, !usuario.isBloqueado());
+        }
+        return "redirect:/registrados";
     }
 
     @GetMapping("/registrados/{id}")

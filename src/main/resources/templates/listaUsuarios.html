@@ -13,6 +13,12 @@
         </div>
     </div>
 
+    <div class="row mt-3" th:if="${error != null}">
+        <div class="col">
+            <div class="alert alert-danger" th:text="${error}"></div>
+        </div>
+    </div>
+
     <div class="row mt-3">
         <div class="col">
             <table class="table table-striped">
@@ -21,6 +27,8 @@
                     <th>Id</th>
                     <th>Email</th>
                     <th>Descripción</th>
+                    <th>Estado</th>
+                    <th>Acceso</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -28,6 +36,17 @@
                     <td th:text="${usuario.id}"></td>
                     <td th:text="${usuario.email}"></td>
                     <td><a class="btn btn-primary btn-xs" th:href="@{/registrados/{id}(id=${usuario.id})}">Ver descripción</a></td>
+                    <td>
+                        <span class="badge badge-danger bg-danger" th:if="${usuario.bloqueado}">Bloqueado</span>
+                        <span class="badge badge-success bg-success" th:unless="${usuario.bloqueado}">Activo</span>
+                    </td>
+                    <td>
+                        <form th:unless="${usuario.admin}" method="post" th:action="@{/registrados/{id}/bloqueo(id=${usuario.id})}">
+                            <button type="submit" class="btn btn-xs"
+                                    th:classappend="${usuario.bloqueado} ? 'btn-success' : 'btn-danger'"
+                                    th:text="${usuario.bloqueado} ? 'Habilitar' : 'Bloquear'"></button>
+                        </form>
+                    </td>
                 </tr>
                 </tbody>
             </table>
